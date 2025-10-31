@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Sports Cards - Premium Trading Cards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            padding: 40px 20px;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .tagline {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .contact-info {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 300px;
+            text-align: center;
+            color: white;
+            font-size: 1.1em;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 350px;
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            position: relative;
+        }
+
+        .card-overlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.3em;
+            font-weight: bold;
+        }
+
+        .card-info {
+            padding: 20px;
+        }
+
+        .card-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .card-details {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+
+        .price-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #eee;
+        }
+
+        .price {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .buy-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: transform 0.2s ease;
+        }
+
+        .buy-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .modal p {
+            margin: 15px 0;
+            font-size: 1.1em;
+        }
+
+        .close-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏆 Elite Sports Cards</h1>
+            <p class="tagline">Premium Trading Cards Collection</p>
+            <div class="contact-info">
+                📞 Call us: 1234567890
+            </div>
+        </header>
+
+        <div class="cards-grid" id="cardsGrid"></div>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h2>Purchase Card</h2>
+            <p id="modalText"></p>
+            <p><strong>Price: $40</strong></p>
+            <p>Call us to complete your order:</p>
+            <p style="font-size: 1.5em; color: #667eea; font-weight: bold;">1234567890</p>
+            <button class="close-btn" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const cards = [
+            {name: "LeBron James", sport: "Basketball", year: "2023", team: "Lakers", emoji: "🏀"},
+            {name: "Tom Brady", sport: "Football", year: "2022", team: "Buccaneers", emoji: "🏈"},
+            {name: "Mike Trout", sport: "Baseball", year: "2023", team: "Angels", emoji: "⚾"},
+            {name: "Connor McDavid", sport: "Hockey", year: "2023", team: "Oilers", emoji: "🏒"},
+            {name: "Lionel Messi", sport: "Soccer", year: "2023", team: "Inter Miami", emoji: "⚽"},
+            {name: "Stephen Curry", sport: "Basketball", year: "2023", team: "Warriors", emoji: "🏀"},
+            {name: "Patrick Mahomes", sport: "Football", year: "2023", team: "Chiefs", emoji: "🏈"},
+            {name: "Shohei Ohtani", sport: "Baseball", year: "2023", team: "Dodgers", emoji: "⚾"},
+            {name: "Giannis Antetokounmpo", sport: "Basketball", year: "2023", team: "Bucks", emoji: "🏀"},
+            {name: "Aaron Judge", sport: "Baseball", year: "2023", team: "Yankees", emoji: "⚾"},
+            {name: "Luka Dončić", sport: "Basketball", year: "2023", team: "Mavericks", emoji: "🏀"},
+            {name: "Justin Jefferson", sport: "Football", year: "2023", team: "Vikings", emoji: "🏈"}
+        ];
+
+        const grid = document.getElementById('cardsGrid');
+        
+        cards.forEach((card, index) => {
+            const cardEl = document.createElement('div');
+            cardEl.className = 'card';
+            cardEl.innerHTML = `
+                <div class="card-image" style="background: linear-gradient(${45 + index * 30}deg, ${getRandomColor()}, ${getRandomColor()})">
+                    ${card.emoji}
+                    <div class="card-overlay">LIMITED</div>
+                </div>
+                <div class="card-info">
+                    <div class="card-name">${card.name}</div>
+                    <div class="card-details">
+                        ${card.sport} • ${card.team}<br>
+                        ${card.year} Edition
+                    </div>
+                    <div class="price-section">
+                        <div class="price">$40</div>
+                        <button class="buy-btn" onclick="buyCard('${card.name}')">Buy Now</button>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(cardEl);
+        });
+
+        function getRandomColor() {
+            const colors = ['#f093fb', '#f5576c', '#4facfe', '#00f2fe', '#43e97b', '#38f9d7', '#fa709a', '#fee140'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        function buyCard(cardName) {
+            document.getElementById('modalText').textContent = `You selected: ${cardName}`;
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
